@@ -48,8 +48,18 @@ public class BookController {
 
     @PutMapping("/{id}")
     public  ResponseEntity<RespondObject>updateBook(@RequestBody BookDTO bookDTO,@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new RespondObject( "ok","update book successfully",bookService.updateBook(bookDTO,id)));
+        Book updateBook = bookService.updateBook(bookDTO,id);
+        if (updateBook==null){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new RespondObject( "failed","dont find book",null)
+            );
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new RespondObject( "ok","update book successfully",bookService.updateBook(bookDTO,id))
+            );
+        }
+
     }
 
     @DeleteMapping("/{id}")
@@ -73,4 +83,12 @@ public class BookController {
                 new RespondObject("ok","get book  sucessfull",bookService.getBook() )
         );
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RespondObject>getBookById(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new RespondObject("ok","get book  sucessfull",bookRepository.findById(id) )
+        );
+    }
+
 }

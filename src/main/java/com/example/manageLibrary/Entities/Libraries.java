@@ -59,10 +59,10 @@ public class Libraries {
         this.location = location;
     }
 
-//    public List<Book> getBooks() {
-//        return books;
-//    }
-//
+    public Set<Book> getBooks() {
+        return books;
+    }
+
     public void setBooks(Set<Book> books) {
         this.books = books;
     }

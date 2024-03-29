@@ -97,6 +97,8 @@ public class BookService {
     public Book insertBook (BookDTO bookDTO){
         Book newBook = new Book();
         List<Authors>listAuthor = authorRepository.findAllById(bookDTO.getListIdAuthor());
+        List<Authors>listAuthorCreateNew = bookDTO.getListNewAuthor();
+        listAuthor.addAll(listAuthorCreateNew);
         Set<Authors> listAuthorInBook= new HashSet<>(listAuthor);
         newBook.setAuthors(listAuthorInBook);
         newBook.setCode(bookDTO.getCode());
@@ -110,17 +112,24 @@ public class BookService {
     }
     public Book updateBook (BookDTO bookDTO,Long id){
         Optional<Book> bookOptional = bookRepository.findById(id);
-        Book updateBook = bookOptional.get();
-        List<Authors>listAuthor = authorRepository.findAllById(bookDTO.getListIdAuthor());
-        Set<Authors> listAuthorInBook= new HashSet<>(listAuthor);
-        updateBook.setAuthors(listAuthorInBook);
-        updateBook.setCode(bookDTO.getCode());
-        updateBook.setName(bookDTO.getName());
-        updateBook.setCategory(bookDTO.getCategory());
-        Book addBook = bookRepository.save(updateBook);
-        Set<Image>listImageAfterCreate=addImageWhenAddBook(bookDTO.getImage(),addBook);
-        addBook.setImage(listImageAfterCreate);
-        return bookRepository.save(addBook);
+        if (bookOptional.isEmpty()){
+            return null ;
+        }
+        else{
+            Book updateBook = bookOptional.get();
+            List<Authors>listAuthor = authorRepository.findAllById(bookDTO.getListIdAuthor());
+            List<Authors>listAuthorCreateNew = bookDTO.getListNewAuthor();
+            listAuthor.addAll(listAuthorCreateNew);
+            Set<Authors> listAuthorInBook= new HashSet<>(listAuthor);
+            updateBook.setAuthors(listAuthorInBook);
+            updateBook.setCode(bookDTO.getCode());
+            updateBook.setName(bookDTO.getName());
+            updateBook.setCategory(bookDTO.getCategory());
+            Book addBook = bookRepository.save(updateBook);
+            Set<Image>listImageAfterCreate=addImageWhenAddBook(bookDTO.getImage(),addBook);
+            addBook.setImage(listImageAfterCreate);
+            return bookRepository.save(addBook);
+        }
     }
 
     public  Book deleteBook (Long id){

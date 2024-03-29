@@ -1,6 +1,7 @@
 package com.example.manageLibrary.DTO;
 
 import com.example.manageLibrary.Entities.Authors;
+import com.example.manageLibrary.Entities.Book;
 import com.example.manageLibrary.Entities.Image;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,8 @@ public class BookDTO {
     private Set<Image> Image;
 
     private  List<Long>listIdAuthor;
+
+    private  List<Authors>listNewAuthor ;
 
     public List<Long> getListIdAuthor() {
         return listIdAuthor;
@@ -56,5 +59,13 @@ public class BookDTO {
 
     public void setImage(Set<Image> image) {
         Image = image;
+    }
+
+    public List<Authors> getListNewAuthor() {
+        return listNewAuthor;
+    }
+
+    public void setListNewAuthor(List<Authors> listNewAuthor) {
+        this.listNewAuthor = listNewAuthor;
     }
 }

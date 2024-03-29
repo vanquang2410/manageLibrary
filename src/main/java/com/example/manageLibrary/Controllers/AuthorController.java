@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,8 +27,6 @@ public class AuthorController {
 
     @PostMapping("")
     ResponseEntity<RespondObject>addAuthor (@RequestBody Authors authors)  {
-
-
         return ResponseEntity.status(HttpStatus.OK).body(
                 new RespondObject("ok","add author sucessfully",authorRepository.save(authors))
         );
@@ -34,8 +34,6 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     ResponseEntity<RespondObject>getAuthorById (@PathVariable Long id)  {
-
-
         return ResponseEntity.status(HttpStatus.OK).body(
                 new RespondObject("ok","add author sucessfully",authorRepository.findById(id))
         );
@@ -60,6 +58,21 @@ public class AuthorController {
     ResponseEntity<RespondObject>updateAuthorById(@PathVariable Long id ,@RequestBody Authors authors){
         return ResponseEntity.status(HttpStatus.OK).body(
                 new RespondObject("ok","update author sucessfully",authorService.updateAuthorById(authors,id))
+        );
+    }
+    @GetMapping("/export")
+    ResponseEntity<RespondObject>export(){
+        List<Authors>listAuthor= new ArrayList<>();
+        Authors authors = new Authors();
+        for (Long i = 1L; i<=20L ; i++){
+            authors.setId(i);
+            authors.setName("tac gia "+i);
+            authors.setYear(1990);
+            listAuthor.add(authors);
+        }
+        authorRepository.saveAll(listAuthor);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new RespondObject("ok","update author sucessfully","")
         );
     }
 
