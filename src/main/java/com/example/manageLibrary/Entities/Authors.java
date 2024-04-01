@@ -10,12 +10,16 @@
         @GeneratedValue(strategy = GenerationType.AUTO)
         private  Long id ;
 
-        private  String name ;
+        private String name;
 
-        private  int year;
+        private int year;
 
 
         public Authors() {
+        }
+
+        public Authors(String name) {
+            this.name = name;
         }
 
         public Authors(Long id, String name, int year) {

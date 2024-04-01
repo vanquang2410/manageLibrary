@@ -101,8 +101,20 @@ public class BookService {
 
     public Book insertBook (BookDTO bookDTO){
         Book newBook = new Book();
-        List<Authors>listAuthor = authorRepository.findAllById(bookDTO.getListIdAuthor());
-        List<Authors>listAuthorCreateNew = bookDTO.getListNewAuthor();
+        List<?>authors = bookDTO.getAuthors();
+        List<Authors> newListAuthor = new ArrayList<>();
+        List<Long> listIdAuthor = new ArrayList<>();
+        for (Object author : authors) {
+            if (author instanceof String) {
+                String name =(String) author;
+                Authors newAuthor = new Authors(name);
+                newListAuthor.add(newAuthor);
+            } else if (author instanceof Number) {
+                listIdAuthor.add(((Integer) author).longValue());
+            }
+        }
+        List<Authors>listAuthor = authorRepository.findAllById(listIdAuthor);
+        List<Authors>listAuthorCreateNew = newListAuthor;
         listAuthor.addAll(listAuthorCreateNew);
         Set<Authors> listAuthorInBook= new HashSet<>(listAuthor);
         newBook.setAuthors(listAuthorInBook);
@@ -122,8 +134,20 @@ public class BookService {
         }
         else{
             Book updateBook = bookOptional.get();
-            List<Authors>listAuthor = authorRepository.findAllById(bookDTO.getListIdAuthor());
-            List<Authors>listAuthorCreateNew = bookDTO.getListNewAuthor();
+            List<?>authors = bookDTO.getAuthors();
+            List<Authors> newListAuthor = new ArrayList<>();
+            List<Long> listIdAuthor = new ArrayList<>();
+                for (Object author : authors) {
+                if (author instanceof String) {
+                    String name =(String) author;
+                    Authors newAuthor = new Authors(name);
+                    newListAuthor.add(newAuthor);
+                } else if (author instanceof Number) {
+                    listIdAuthor.add(((Integer) author).longValue());
+                }
+            }
+            List<Authors>listAuthor = authorRepository.findAllById(listIdAuthor);
+            List<Authors>listAuthorCreateNew = newListAuthor;
             listAuthor.addAll(listAuthorCreateNew);
             Set<Authors> listAuthorInBook= new HashSet<>(listAuthor);
             updateBook.setAuthors(listAuthorInBook);
