@@ -8,6 +8,9 @@ import com.example.manageLibrary.Services.BookService;
 import com.example.manageLibrary.Services.LibraryService;
 import com.example.manageLibrary.Services.RespondObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -78,9 +81,11 @@ public class BookController {
     }
 
     @GetMapping("")
-    public ResponseEntity<RespondObject>getBooks(){
+    public ResponseEntity<RespondObject>getBooks(@RequestParam int page){
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable= PageRequest.of(page-1,10,sort);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new RespondObject("ok","get book  sucessfull",bookService.getBook() )
+                new RespondObject("ok","get book  sucessfull",bookRepository.findAll(pageable))
         );
     }
 

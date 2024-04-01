@@ -2,12 +2,17 @@ package com.example.manageLibrary.Services;
 
 import com.example.manageLibrary.DTO.AddLibrabyDTO;
 import com.example.manageLibrary.DTO.BookDTO;
+import com.example.manageLibrary.DTO.SearchLibrary;
 import com.example.manageLibrary.DTO.UpdateLibraryDTO;
+import com.example.manageLibrary.Entities.Authors;
 import com.example.manageLibrary.Entities.Book;
 import com.example.manageLibrary.Entities.Libraries;
 import com.example.manageLibrary.Repositories.LibraryRepository;
 import com.example.manageLibrary.Response.LibraryResponse;
+import com.example.manageLibrary.Specification.AuthorSpecification;
+import com.example.manageLibrary.Specification.LibrarySpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,6 +41,10 @@ public class LibraryService {
         libraries.setName(addLibrabyDTO.getLibrabyName());
         libraries.setLocation(addLibrabyDTO.getLocation());
         return libraries;
+    }
+    public  List<Libraries>searchLibraries(SearchLibrary searchLibrary){
+        Specification<Libraries> spec = LibrarySpecification.searchLibraryByName(searchLibrary);
+        return libraryRepository.findAll(spec);
     }
 
     public Libraries addLibrary(Libraries libraries, List<Long> listIdBookDTO){

@@ -11,6 +11,9 @@ import com.example.manageLibrary.Repositories.BookRepository;
 import com.example.manageLibrary.Repositories.ImageRepository;
 import com.example.manageLibrary.Specification.BookSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -57,8 +60,9 @@ public class BookService {
 //        return bookRepository.save(addBook);
 //    }
 
-    public List<Book> getBook(){
-        return bookRepository.findAll();
+    public List<Book> getBook(int page){
+        Pageable pageable = PageRequest.of(page-1,10);
+        return (List<Book>) bookRepository.findAll(pageable);
     }
 
     public  Set<Image>addImageWhenAddBook(Set<Image> imagesList, Book book){
@@ -90,6 +94,7 @@ public class BookService {
     }
 
     public List<Book> searchBooks(SearchBookDTO searchBookDTO) {
+
         Specification<Book> spec = BookSpecifications.searchBookByInput(searchBookDTO);
         return bookRepository.findAll(spec);
     }

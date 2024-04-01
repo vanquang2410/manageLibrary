@@ -2,6 +2,7 @@ package com.example.manageLibrary.Controllers;
 
 import com.example.manageLibrary.DTO.AddLibrabyDTO;
 import com.example.manageLibrary.DTO.BookDTO;
+import com.example.manageLibrary.DTO.SearchLibrary;
 import com.example.manageLibrary.DTO.UpdateLibraryDTO;
 import com.example.manageLibrary.Entities.Book;
 import com.example.manageLibrary.Entities.Libraries;
@@ -10,6 +11,10 @@ import com.example.manageLibrary.Response.LibraryResponse;
 import com.example.manageLibrary.Services.LibraryService;
 import com.example.manageLibrary.Services.RespondObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,18 +42,19 @@ public class LibraryController
                 );
         }
 
-        @GetMapping("")
-        ResponseEntity<RespondObject>getAllLibraries ()  {
+    @PostMapping("/search")
+    public ResponseEntity<RespondObject>searchLibrary (@RequestBody SearchLibrary searchLibrary){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new RespondObject("ok","search",libraryService.searchLibraries(searchLibrary))
+        );
+    }
 
-            List<Libraries>findAllLibrary=libraryRepository.findAll();
-            List<LibraryResponse>convert=new ArrayList<>();
-            for (int i =0 ; i <findAllLibrary.size(); i++){
-                Libraries lib= findAllLibrary.get(i);
-                LibraryResponse newlibraryRespond =libraryService.convertLibraryToLibraryResponse(lib);
-                convert.add(newlibraryRespond);
-            }
+        @GetMapping("")
+        ResponseEntity<RespondObject>getAllLibraries (@RequestParam int page)  {
+            Sort sort = Sort.by(Sort.Direction.DESC, "id");
+            Pageable pageable = PageRequest.of(page-1,10,sort);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new RespondObject("ok","add library sucessfully",convert)
+                    new RespondObject("ok","add library sucessfully",libraryRepository.findAll(pageable))
             );
         }
 
@@ -105,10 +111,12 @@ public class LibraryController
             );
     }
     @GetMapping("/{id}/books")
-    public ResponseEntity<RespondObject>getBookByIdLibrary(@PathVariable Long id ){
-
+    public ResponseEntity<RespondObject>getBookByIdLibrary(@PathVariable Long id ,@RequestParam int page){
+        Optional<Libraries> librariesOptional =  libraryRepository.findById(id);
+        Libraries librariesById=librariesOptional.get();
+        List<?> booksPage=new ArrayList<>(librariesById.getBooks());
         return  ResponseEntity.status(HttpStatus.OK).body(
-                new RespondObject("OK","get book in library successfully",libraryRepository.findById(id).get().getBooks())
+                new RespondObject("OK","get book in library successfully",booksPage.subList((page-1)*10,page*10))
         );
     }
 

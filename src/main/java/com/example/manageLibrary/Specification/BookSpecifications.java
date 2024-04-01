@@ -17,7 +17,7 @@ import java.util.List;
 public class BookSpecifications {
 
 
-    public static Specification<Book> searchBookByInput(SearchBookDTO searchBookDTO) {
+    public static Specification<Book>   searchBookByInput(SearchBookDTO searchBookDTO) {
         return (Root<Book> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.conjunction();
 
